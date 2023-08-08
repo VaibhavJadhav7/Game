@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #f0f0f0;
+  }
+  
+  #player {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+  
+  #obstacle {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: red;
+  }
+</style>
+</head>
+<body>
+  <div id="player"></div>
+  <div id="obstacle"></div>
+  
+  <script>
+    const player = document.getElementById("player");
+    const obstacle = document.getElementById("obstacle");
+    let playerX = window.innerWidth / 2 - 25;
+    let obstacleX = Math.random() * (window.innerWidth - 50);
+    let obstacleY = -50;
+    const playerSpeed = 5;
+    const obstacleSpeed = 3;
+
+    function gameLoop() {
+      updatePlayer();
+      updateObstacle();
+      checkCollision();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function updatePlayer() {
+      if (playerX > 0 && playerX < window.innerWidth - 50) {
+        if (keys.left) playerX -= playerSpeed;
+        if (keys.right) playerX += playerSpeed;
+      }
+      player.style.left = playerX + "px";
+    }
+
+    function updateObstacle() {
+      obstacleY += obstacleSpeed;
+      if (obstacleY > window.innerHeight) {
+        obstacleX = Math.random() * (window.innerWidth - 50);
+        obstacleY = -50;
+      }
+      obstacle.style.left = obstacleX + "px";
+      obstacle.style.top = obstacleY + "px";
+    }
+
+    function checkCollision() {
+      const playerRect = player.getBoundingClientRect();
+      const obstacleRect = obstacle.getBoundingClientRect();
+      
+      if (
+        playerRect.left < obstacleRect.right &&
+        playerRect.right > obstacleRect.left &&
+        playerRect.top < obstacleRect.bottom &&
+        playerRect.bottom > obstacleRect.top
+      ) {
+        alert("Game Over");
+      }
+    }
+
+    const keys = {
+      left: false,
+      right: false
+    };
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") keys.left = true;
+      if (event.key === "ArrowRight") keys.right = true;
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "ArrowLeft") keys.left = false;
+      if (event.key === "ArrowRight") keys.right = false;
+    });
+
+    gameLoop();
+  </script>
+</body>
+</html>
